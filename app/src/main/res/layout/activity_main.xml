@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:hint="Enter swipe distance"
+        android:hint="@string/enter_swipe_distance"
         android:inputType="number"
         android:minHeight="48dp"
         android:minEms="5" />
@@ -22,6 +22,6 @@
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save Distance"/>
+        android:text="@string/save_distance"/>
 
 </LinearLayout>
