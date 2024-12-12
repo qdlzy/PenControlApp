@@ -1,8 +1,8 @@
 package com.example.pencontrolapp
 
 import android.accessibilityservice.AccessibilityService
-import android.accessibilityservice.AccessibilityServiceInfo
 import android.accessibilityservice.GestureDescription
+import android.content.Context
 import android.graphics.Path
 import android.util.Log
 import android.view.KeyEvent
@@ -13,13 +13,10 @@ class MyAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         Log.d("MyAccessibilityService", "Accessibility service connected")
-        serviceInfo = serviceInfo.apply {
-            flags = flags or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
-        }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        // 不需要处理特定AccessibilityEvent
+        // 不需要额外处理事件
     }
 
     override fun onInterrupt() {
@@ -44,31 +41,62 @@ class MyAccessibilityService : AccessibilityService() {
         return super.onKeyEvent(event)
     }
 
+    private fun getSwipeDistance(): Int {
+        val sharedPref = getSharedPreferences("settings", Context.MODE_PRIVATE)
+        return sharedPref.getInt("swipe_distance", 700) // 默认700像素
+    }
+
     private fun performSwipeForward() {
-        // 模拟手势：从左向右滑动
+        val distance = getSwipeDistance()
+        val startX = 300f
+        val startY = 500f
+        val endX = startX + distance
+        val endY = 500f
+
         val path = Path().apply {
-            moveTo(300f, 500f)
-            lineTo(1000f, 500f)
+            moveTo(startX, startY)
+            lineTo(endX, endY)
         }
 
         val gesture = GestureDescription.Builder()
             .addStroke(GestureDescription.StrokeDescription(path, 0, 100))
             .build()
 
-        dispatchGesture(gesture, null, null)
+        dispatchGesture(gesture, object : GestureResultCallback() {
+            override fun onCompleted(gestureDescription: GestureDescription) {
+                Log.d("MyAccessibilityService", "Forward swipe gesture completed")
+            }
+
+            override fun onCancelled(gestureDescription: GestureDescription) {
+                Log.d("MyAccessibilityService", "Forward swipe gesture cancelled")
+            }
+        }, null)
     }
 
     private fun performSwipeBackward() {
-        // 模拟手势：从右向左滑动
+        val distance = getSwipeDistance()
+        val startX = 1000f
+        val startY = 500f
+        val endX = startX - distance
+        val endY = 500f
+
         val path = Path().apply {
-            moveTo(1000f, 500f)
-            lineTo(300f, 500f)
+            moveTo(startX, startY)
+            lineTo(endX, endY)
         }
 
         val gesture = GestureDescription.Builder()
             .addStroke(GestureDescription.StrokeDescription(path, 0, 100))
             .build()
 
-        dispatchGesture(gesture, null, null)
+        dispatchGesture(gesture, object : GestureResultCallback() {
+            override fun onCompleted(gestureDescription: GestureDescription) {
+                Log.d("MyAccessibilityService", "Backward swipe gesture completed")
+            }
+
+            override fun onCancelled(gestureDescription: GestureDescription) {
+                Log.d("MyAccessibilityService", "Backward swipe gesture cancelled")
+            }
+        }, null)
     }
 }
