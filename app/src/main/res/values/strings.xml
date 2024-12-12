@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PenControlApp</string>
+    <string name="fast_forward">Fast Forward</string>
+    <string name="rewind">Rewind</string>
+</resources>
