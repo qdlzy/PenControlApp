@@ -1,7 +1,6 @@
 package com.example.pencontrolapp
 
 import android.accessibilityservice.AccessibilityServiceInfo
-import android.accessibilityservice.AccessibilityService
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -9,33 +8,88 @@ import android.os.Bundle
 import android.view.accessibility.AccessibilityManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var distanceEditText: EditText
+    private lateinit var leftRightDistanceEditText: EditText
+    private lateinit var upDownDistanceEditText: EditText
     private lateinit var saveButton: Button
+    private lateinit var leftRightRadioButton: RadioButton
+    private lateinit var upDownRadioButton: RadioButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        distanceEditText = findViewById(R.id.distanceEditText)
+        leftRightDistanceEditText = findViewById(R.id.leftRightDistanceEditText)
+        upDownDistanceEditText = findViewById(R.id.upDownDistanceEditText)
         saveButton = findViewById(R.id.saveButton)
+        leftRightRadioButton = findViewById(R.id.leftRightRadioButton)
+        upDownRadioButton = findViewById(R.id.upDownRadioButton)
 
         val sharedPref = getSharedPreferences("settings", Context.MODE_PRIVATE)
-        val savedDistance = sharedPref.getInt("swipe_distance", 700)
-        distanceEditText.setText(savedDistance.toString())
+
+        val savedLeftRightDistance = sharedPref.getInt("swipe_distance_left_right", 60)
+        leftRightDistanceEditText.setText(savedLeftRightDistance.toString())
+
+        val savedUpDownDistance = sharedPref.getInt("swipe_distance_up_down", 130)
+        upDownDistanceEditText.setText(savedUpDownDistance.toString())
+
+        val savedMode = sharedPref.getString("swipe_mode", "left_right")
+
+        // 根据savedMode手动设置单选状态
+        if (savedMode == "up_down") {
+            upDownRadioButton.isChecked = true
+            leftRightRadioButton.isChecked = false
+        } else {
+            leftRightRadioButton.isChecked = true
+            upDownRadioButton.isChecked = false
+        }
+
+        // 手动互斥逻辑
+        leftRightRadioButton.setOnClickListener {
+            leftRightRadioButton.isChecked = true
+            upDownRadioButton.isChecked = false
+        }
+
+        upDownRadioButton.setOnClickListener {
+            upDownRadioButton.isChecked = true
+            leftRightRadioButton.isChecked = false
+        }
 
         saveButton.setOnClickListener {
-            val distanceStr = distanceEditText.text.toString()
-            val distance = distanceStr.toIntOrNull() ?: 700
-            sharedPref.edit().putInt("swipe_distance", distance).apply()
+            val leftRightStr = leftRightDistanceEditText.text.toString()
+            val upDownStr = upDownDistanceEditText.text.toString()
+
+            val leftRightDistance = leftRightStr.toIntOrNull()
+            val upDownDistance = upDownStr.toIntOrNull()
+
+            if (leftRightDistance == null || leftRightDistance !in 10..1000) {
+                showInvalidDistanceDialog()
+                return@setOnClickListener
+            }
+            if (upDownDistance == null || upDownDistance !in 10..1000) {
+                showInvalidDistanceDialog()
+                return@setOnClickListener
+            }
+
+            sharedPref.edit().putInt("swipe_distance_left_right", leftRightDistance).apply()
+            sharedPref.edit().putInt("swipe_distance_up_down", upDownDistance).apply()
+
+            val selectedMode = if (upDownRadioButton.isChecked) "up_down" else "left_right"
+            sharedPref.edit().putString("swipe_mode", selectedMode).apply()
+
+            AlertDialog.Builder(this)
+                .setTitle(getString(R.string.save_settings))
+                .setMessage(getString(R.string.settings_saved_successfully))
+                .setPositiveButton(getString(R.string.ok), null)
+                .show()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        // 每次返回界面时，检查无障碍服务是否已启用
         if (!isAccessibilityServiceEnabled(this, MyAccessibilityService::class.java)) {
             AlertDialog.Builder(this)
                 .setTitle(getString(R.string.accessibility_not_enabled_title))
@@ -65,5 +119,13 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
+    }
+
+    private fun showInvalidDistanceDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.invalid_distance))
+            .setMessage(getString(R.string.invalid_distance))
+            .setPositiveButton(getString(R.string.ok), null)
+            .show()
     }
 }

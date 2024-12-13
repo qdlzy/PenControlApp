@@ -1,27 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    tools:context=".MainActivity">
+    android:gravity="center_horizontal"
+    android:padding="16dp">
 
-    <EditText
-        android:id="@+id/distanceEditText"
-        android:layout_width="wrap_content"
+    <!-- 第一行： 左右滑动 + 距离输入框 -->
+    <LinearLayout
+        android:id="@+id/leftRightContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:hint="@string/enter_swipe_distance"
-        android:inputType="number"
-        android:minHeight="48dp"
-        android:minEms="5" />
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton
+            android:id="@+id/leftRightRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/left_right"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <EditText
+            android:id="@+id/leftRightDistanceEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:hint="@string/enter_left_right_distance"
+            android:inputType="number"
+            android:minEms="5"
+            tools:ignore="TouchTargetSizeCheck" />
+    </LinearLayout>
+
+    <!-- 第二行： 上下滑动 + 距离输入框 -->
+    <LinearLayout
+        android:id="@+id/upDownContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton
+            android:id="@+id/upDownRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/up_down"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <EditText
+            android:id="@+id/upDownDistanceEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:hint="@string/enter_up_down_distance"
+            android:inputType="number"
+            android:minEms="5"
+            tools:ignore="TouchTargetSizeCheck" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/save_distance"/>
-
+        android:text="@string/save_settings"
+        android:layout_marginTop="16dp"/>
 </LinearLayout>
