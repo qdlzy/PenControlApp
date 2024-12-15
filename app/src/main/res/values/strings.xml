@@ -1,20 +1,30 @@
 <resources>
-    <string name="app_name">PenControlApp</string>
+    <string name="app_name">PenControl</string>
     <string name="fast_forward">Fast Forward</string>
     <string name="rewind">Rewind</string>
     <string name="enter_swipe_distance">Enter swipe distance</string>
     <string name="save_distance">Save Distance</string>
     <string name="accessibility_not_enabled_title">无障碍服务未启用</string>
     <string name="accessibility_not_enabled_message">请前往系统无障碍设置启用该服务，以使用手势功能。</string>
+    <string name="accessibility_service_description">仅用于模拟手势进行滑动操作，PenControl并不会收集任何个人信息。</string>
     <string name="go_to_settings">前往设置</string>
     <string name="cancel">取消</string>
 
     <string name="left_right">左右滑动</string>
     <string name="up_down">上下滑动</string>
-    <string name="enter_left_right_distance">输入左右滑动距离</string>
-    <string name="enter_up_down_distance">输入上下滑动距离</string>
+    <string name="enter_left_right_distance">滑动距离，default:60</string>
+    <string name="enter_up_down_distance">滑动距离，default:130</string>
     <string name="save_settings">保存设置</string>
     <string name="settings_saved_successfully">设置已保存成功</string>
     <string name="ok">确定</string>
     <string name="invalid_distance">请输入10到1000之间的滑动距离</string>
+
+    <string name="custom_keys">自定义按键</string>
+    <string name="prev_keys_label">左滑/下滑</string>
+    <string name="next_keys_label">右滑/上滑</string>
+    <string name="key_input_hint">将焦点放到输入框，然后按下物理按键会自动录入键值</string>
+    <string name="reset_keys">重置</string>
+
+    <string name="error">错误</string>
+    <string name="duplicate_keys_error">请使用不同的按键。</string>
 </resources>

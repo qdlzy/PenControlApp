@@ -60,10 +60,24 @@
             tools:ignore="TouchTargetSizeCheck" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/saveButton"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/save_settings"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/customKeysButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/custom_keys"
+            android:layout_marginEnd="16dp"/>
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save_settings"/>
+    </LinearLayout>
 </LinearLayout>

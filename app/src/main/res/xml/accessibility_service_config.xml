@@ -8,7 +8,6 @@
     android:canRequestTouchExplorationMode="true"
     android:canPerformGestures="true"
     android:accessibilityFlags="flagRequestFilterKeyEvents"
-
-    android:description="@string/app_name" />
+    android:description="@string/accessibility_service_description" />
 
 <!--    android:accessibilityServiceInfoFlags="flagReportViewIds"-->

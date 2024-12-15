@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
+import com.example.pencontrolapp.ui.CustomKeyDialog
 
 class MainActivity : AppCompatActivity() {
     private lateinit var leftRightDistanceEditText: EditText
@@ -17,6 +18,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var saveButton: Button
     private lateinit var leftRightRadioButton: RadioButton
     private lateinit var upDownRadioButton: RadioButton
+
+    companion object {
+        @Volatile
+        var isCustomDialogShowing = false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +44,6 @@ class MainActivity : AppCompatActivity() {
 
         val savedMode = sharedPref.getString("swipe_mode", "left_right")
 
-        // 根据savedMode手动设置单选状态
         if (savedMode == "up_down") {
             upDownRadioButton.isChecked = true
             leftRightRadioButton.isChecked = false
@@ -85,6 +90,12 @@ class MainActivity : AppCompatActivity() {
                 .setMessage(getString(R.string.settings_saved_successfully))
                 .setPositiveButton(getString(R.string.ok), null)
                 .show()
+        }
+
+        val customKeysButton = findViewById<Button>(R.id.customKeysButton)
+        customKeysButton.setOnClickListener {
+            val dialog = CustomKeyDialog(this)
+            dialog.show()
         }
     }
 

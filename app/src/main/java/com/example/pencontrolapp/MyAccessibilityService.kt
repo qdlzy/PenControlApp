@@ -7,6 +7,7 @@ import android.graphics.Path
 import android.util.Log
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
+import com.example.pencontrolapp.utils.getPrefString
 
 class MyAccessibilityService : AccessibilityService() {
 
@@ -24,16 +25,41 @@ class MyAccessibilityService : AccessibilityService() {
     }
 
     override fun onKeyEvent(event: KeyEvent): Boolean {
+        // 如果自定义对话框正在显示，则不处理滑动逻辑
+        if (MainActivity.isCustomDialogShowing) {
+            return super.onKeyEvent(event)
+        }
+
         if (event.action == KeyEvent.ACTION_DOWN) {
             val settings = getSwipeSettings()
+            val (prevKeys, nextKeys) = getCustomKeys(this)
+
+            val keyCode = event.keyCode
+            if (prevKeys.contains(keyCode)) {
+                if (settings.mode == "left_right") {
+                    performHorizontalSwipe(isForward = false, distance = settings.distanceLeftRight)
+                } else {
+                    performVerticalSwipe(isForward = true, distance = settings.distanceUpDown) // 下滑
+                }
+                return true
+            }
+
+            if (nextKeys.contains(keyCode)) {
+                if (settings.mode == "left_right") {
+                    performHorizontalSwipe(isForward = true, distance = settings.distanceLeftRight)
+                } else {
+                    performVerticalSwipe(isForward = false, distance = settings.distanceUpDown) // 上滑
+                }
+                return true
+            }
+
+            // 原本的PAGE_UP / PAGE_DOWN逻辑
             when (event.keyCode) {
                 KeyEvent.KEYCODE_PAGE_UP -> {
                     if (settings.mode == "left_right") {
-                        // 左右模式下 PAGE_UP -> 左滑 (isForward=false)
                         Log.d("MyAccessibilityService", "Left Swipe (left_right mode)")
                         performHorizontalSwipe(isForward = false, distance = settings.distanceLeftRight)
                     } else {
-                        // 上下模式下 PAGE_UP -> 下滑 (isForward=true)
                         Log.d("MyAccessibilityService", "Down Swipe (up_down mode)")
                         performVerticalSwipe(isForward = true, distance = settings.distanceUpDown)
                     }
@@ -41,11 +67,9 @@ class MyAccessibilityService : AccessibilityService() {
                 }
                 KeyEvent.KEYCODE_PAGE_DOWN -> {
                     if (settings.mode == "left_right") {
-                        // 左右模式下 PAGE_DOWN -> 右滑 (isForward=true)
                         Log.d("MyAccessibilityService", "Right Swipe (left_right mode)")
                         performHorizontalSwipe(isForward = true, distance = settings.distanceLeftRight)
                     } else {
-                        // 上下模式下 PAGE_DOWN -> 上滑 (isForward=false)
                         Log.d("MyAccessibilityService", "Up Swipe (up_down mode)")
                         performVerticalSwipe(isForward = false, distance = settings.distanceUpDown)
                     }
@@ -64,11 +88,14 @@ class MyAccessibilityService : AccessibilityService() {
         return SwipeSettings(mode, distanceLeftRight, distanceUpDown)
     }
 
-    /**
-     * Horizontal swipe:
-     * isForward=true表示右滑(startX=300, endX=300+distance)
-     * isForward=false表示左滑(startX=1000, endX=1000 - distance)
-     */
+    private fun getCustomKeys(context: Context): Pair<List<Int>, List<Int>> {
+        val prevKeysStr = context.getPrefString("customPrevKey", "") ?: ""
+        val nextKeysStr = context.getPrefString("customNextKey", "") ?: ""
+        val prevKeys = prevKeysStr.split(",").mapNotNull { it.toIntOrNull() }
+        val nextKeys = nextKeysStr.split(",").mapNotNull { it.toIntOrNull() }
+        return Pair(prevKeys, nextKeys)
+    }
+
     private fun performHorizontalSwipe(isForward: Boolean, distance: Int) {
         val startX = if (isForward) 300f else 1000f
         val endX = if (isForward) startX + distance else startX - distance
@@ -95,11 +122,6 @@ class MyAccessibilityService : AccessibilityService() {
         }, null)
     }
 
-    /**
-     * Vertical swipe:
-     * isForward=true表示下滑：从y=300向下(y = 300 + distance)
-     * isForward=false表示上滑：从y=1000向上(y = 1000 - distance)
-     */
     private fun performVerticalSwipe(isForward: Boolean, distance: Int) {
         val startX = 500f
         val startY = if (isForward) 300f else 1000f
