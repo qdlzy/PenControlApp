@@ -7,7 +7,7 @@
         android:allowBackup="true"
         android:supportsRtl="true"
         android:label="@string/app_name"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         <!-- 声明辅助功能服务 -->
