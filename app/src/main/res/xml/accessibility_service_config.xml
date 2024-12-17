@@ -7,7 +7,9 @@
     android:canRequestFilterKeyEvents="true"
     android:canRequestTouchExplorationMode="true"
     android:canPerformGestures="true"
+
+    android:canRetrieveWindowContent="true"
+    android:settingsActivity="com.example.pencontrolapp.SettingsActivity"
+
     android:accessibilityFlags="flagRequestFilterKeyEvents"
     android:description="@string/accessibility_service_description" />
-
-<!--    android:accessibilityServiceInfoFlags="flagReportViewIds"-->

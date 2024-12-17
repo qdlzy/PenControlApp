@@ -11,6 +11,15 @@ import com.example.pencontrolapp.utils.getPrefString
 
 class MyAccessibilityService : AccessibilityService() {
 
+    private val supportedApps = listOf(
+        "com.ss.android.ugc.aweme", // 抖音
+        "com.tencent.qqlive",       // 腾讯视频
+        "com.qiyi.video",           // 爱奇艺
+        "com.youku.phone",           // 优酷
+        "tv.danmaku.bili",           // 哔哩哔哩
+        "tv.danmaku.bilihd"           // 哔哩哔哩HD
+    )
+
     override fun onServiceConnected() {
         super.onServiceConnected()
         Log.d("MyAccessibilityService", "Accessibility service connected")
@@ -27,6 +36,12 @@ class MyAccessibilityService : AccessibilityService() {
     override fun onKeyEvent(event: KeyEvent): Boolean {
         // 如果自定义对话框正在显示，则不处理滑动逻辑
         if (MainActivity.isCustomDialogShowing) {
+            return super.onKeyEvent(event)
+        }
+
+        // 获取当前应用的包名
+        val currentPackageName = rootInActiveWindow?.packageName?.toString()
+        if (currentPackageName !in supportedApps) {
             return super.onKeyEvent(event)
         }
 
